@@ -11,7 +11,7 @@ RUN mkdir -p /models/serving_model
 RUN gdown --id 1ytAGIwkLl6miDjcAQ-PuGssTDeVt02mu -O /models/model.zip \
     && unzip /models/model.zip -d /models/serving_model \
     && rm /models/model.zip \
-    && mv /models/serving_model/1736913635 /models/serving_model/1
+    && mv /models/serving_model/* /models/serving_model/1 || true
 
 # Copy config
 COPY ./config /model_config
