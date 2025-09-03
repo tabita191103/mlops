@@ -1,29 +1,28 @@
 FROM tensorflow/serving:latest
 
-# Install wget, unzip, dan gdown
+# Install tools
 RUN apt-get update && apt-get install -y wget unzip python3-pip && rm -rf /var/lib/apt/lists/*
 RUN pip install gdown
 
 # Buat folder model
 RUN mkdir -p /models/serving_model
 
-# Download zip model dari Google Drive
+# Download & unzip model
 RUN gdown --id 1ytAGIwkLl6miDjcAQ-PuGssTDeVt02mu -O /models/model.zip \
-    && unzip /models/model.zip -d /models/ \
+    && unzip /models/model.zip -d /models/serving_model \
     && rm /models/model.zip \
-    && mv /models/output/serving_model/1 /models/serving_model/1 \
-    && rm -rf /models/output
+    && mv /models/serving_model/1736913635 /models/serving_model/1
 
-# Salin konfigurasi monitoring (opsional)
+# Copy config
 COPY ./config /model_config
 
-# Set environment variables
+# Env vars
 ENV MODEL_NAME=serving_model
 ENV MODEL_BASE_PATH=/models
 ENV MONITORING_CONFIG="/model_config/prometheus.config"
 ENV PORT=8501
 
-# Entrypoint TensorFlow Serving
+# Entrypoint
 RUN echo '#!/bin/bash\n\n\
 env\n\
 tensorflow_model_server --port=8500 --rest_api_port=${PORT} \
