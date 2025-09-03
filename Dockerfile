@@ -11,7 +11,8 @@ RUN mkdir -p /models/serving_model
 RUN gdown --id 1ytAGIwkLl6miDjcAQ-PuGssTDeVt02mu -O /models/model.zip \
     && unzip /models/model.zip -d /models/serving_model \
     && rm /models/model.zip \
-    && mv /models/serving_model/* /models/serving_model/1 || true
+    && mv /models/serving_model/serving_model/* /models/serving_model/1
+
 
 # Copy config
 COPY ./config /model_config
@@ -32,3 +33,4 @@ tensorflow_model_server --port=8500 --rest_api_port=${PORT} \
 && chmod +x /usr/bin/tf_serving_entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/tf_serving_entrypoint.sh"]
+
